@@ -1,0 +1,22 @@
+_BASE_: swin_base.yaml
+OUTPUT_DIR: '/projects/katefgroup/language_grounding/video_output_3d_tb_test'
+INPUT:
+  FRAME_RIGHT: 1
+  FRAME_LEFT: 1
+  SAMPLING_FRAME_NUM: 3
+  INPAINT_DEPTH: True
+  RANDOM_FLIP: 'none'
+  CAMERA_DROP: True
+  STRONG_AUGS: True
+  AUGMENT_3D: True
+SOLVER:
+  IMS_PER_BATCH: 6
+  MAX_ITER: 60000
+  CHECKPOINT_PERIOD: 2000
+MODEL:
+  DECODER_3D: True
+  CROSS_VIEW_CONTEXTUALIZE: True
+  KNN: 8
+TEST:
+  EVAL_PERIOD: 1
+  EVAL_3D: True

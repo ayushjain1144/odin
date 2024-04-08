@@ -1,0 +1,10 @@
+area_4_office_18
+area_6_office_12
+area_1_office_8
+area_6_office_7
+area_3_office_7
+area_1_office_7
+area_4_office_16
+area_5_office_17
+area_1_pantry_1
+area_3_lounge_2

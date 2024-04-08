@@ -1,0 +1,10 @@
+area_2_storage_6
+area_4_office_8
+area_2_hallway_4
+area_5_office_20
+area_5_office_2
+area_5_hallway_10
+area_1_office_25
+area_5_office_31
+area_5_office_7
+area_3_lounge_1

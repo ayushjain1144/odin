@@ -1,0 +1,2 @@
+area_5_hallway_10
+area_4_office_8

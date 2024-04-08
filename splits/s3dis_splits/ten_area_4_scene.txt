@@ -1,0 +1,10 @@
+area_6_office_4
+area_2_hallway_1
+area_1_pantry_1
+area_5_hallway_8
+area_1_office_15
+area_5_WC_2
+area_2_WC_1
+area_1_conferenceRoom_2
+area_6_office_1
+area_5_storage_2

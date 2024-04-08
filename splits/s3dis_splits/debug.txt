@@ -1,0 +1,6 @@
+area_5a_hallway_2
+area_5a_lobby_1
+area_5b_hallway_5
+area_5b_hallway_1
+area_5a_hallway_7
+area_6_hallway_6

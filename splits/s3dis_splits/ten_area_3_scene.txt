@@ -1,0 +1,10 @@
+area_4_office_20
+area_1_pantry_1
+area_4_hallway_14
+area_6_office_9
+area_5_office_16
+area_6_office_2
+area_5_office_33
+area_5_hallway_2
+area_2_office_7
+area_6_office_34

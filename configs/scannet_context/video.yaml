@@ -1,0 +1,16 @@
+_BASE_: base.yaml
+OUTPUT_DIR: '/projects/katefgroup/language_grounding/video_output_3d_100k'
+INPUT:
+  FRAME_RIGHT: 1
+  FRAME_LEFT: 1
+  SAMPLING_FRAME_NUM: 3
+SOLVER:
+  IMS_PER_BATCH: 8
+  MAX_ITER: 30000
+  CHECKPOINT_PERIOD: 1000
+MODEL:
+  DECODER_3D: False
+  CROSS_VIEW_CONTEXTUALIZE: False
+TEST:
+  EVAL_PERIOD: 1000
+  EVAL_3D: True
