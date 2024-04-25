@@ -1,12 +1,12 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/odin-a-single-model-for-2d-and-3d-perception/3d-instance-segmentation-on-scannet200)](https://paperswithcode.com/sota/3d-instance-segmentation-on-scannet200?p=odin-a-single-model-for-2d-and-3d-perception)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/odin-a-single-model-for-2d-and-3d-perception/3d-semantic-segmentation-on-scannet200)](https://paperswithcode.com/sota/3d-semantic-segmentation-on-scannet200?p=odin-a-single-model-for-2d-and-3d-perception)
 
-# ODIN: A Single Model for 2D and 3D Segmentation (CVPR 2024 Highlight)
+# ODIN: A Single Model for 2D and 3D Segmentation
 
 
 Authors: [Ayush Jain](https://ayushjain1144.github.io/), [Pushkal Katara](https://pushkalkatara.github.io/), [Nikolaos Gkanatsios](https://github.com/nickgkan), [Adam W. Harley](https://adamharley.com/), [Gabriel Sarch](https://gabesarch.me/), [Kriti Aggarwal](https://scholar.google.com/citations?hl=en&user=iB-h89EAAAAJ), [Vishrav Chaudhary](https://scholar.google.com/citations?hl=en&user=CXlp-fcAAAAJ), [Katerina Fragkiadaki](https://www.cs.cmu.edu/~katef/).
 
-Official implementation of ["ODIN: A Single Model for 2D and 3D Segmentation"](https://odin-seg.github.io/), CVPR 2024.
+Official implementation of ["ODIN: A Single Model for 2D and 3D Segmentation"](https://odin-seg.github.io/), CVPR 2024 (Highlight).
 
 <div align="center">
   <img src="https://odin-seg.github.io/data/teaser_v6-1.png" width="100%" height="100%"/>
