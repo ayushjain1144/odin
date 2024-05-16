@@ -22,6 +22,7 @@ prior
 shapely
 fire
 loguru
+gdown
 git+https://github.com/facebookresearch/detectron2.git
 git+https://github.com/facebookresearch/pytorch3d.git@stable
 git+https://github.com/waspinator/pycococreator.git@0.2.0
