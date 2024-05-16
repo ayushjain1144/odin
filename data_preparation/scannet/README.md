@@ -4,7 +4,7 @@ Look at `data_preparation/dataset/globals_dirs.py` and change the folder paths w
 
 
 ## Downloading ScanNet Mesh/PointCloud Data
-- Download ScanNet v2 data from [HERE](https://github.com/ScanNet/ScanNet). Let DATA_ROOT be the path to folder that contains the downloaded annotations. Under DATA_ROOT there should be a folder scans. Under scans there should be folders with names like scene0001_01. We need `_vh_clean_2.ply`, `_vh_clean_2.0.010000.segs.json`, `_vh_clean_2.labels.ply`, `_vh_clean.aggregation.json`
+- Download ScanNet v2 data from [HERE](https://github.com/ScanNet/ScanNet). Let DATA_ROOT be the path to folder that contains the downloaded annotations. Under DATA_ROOT there should be a folder scans. Under scans there should be folders with names like scene0001_01. We need `_vh_clean_2.ply`, `_vh_clean_2.0.010000.segs.json`, `_vh_clean_2.labels.ply`, `_vh_clean.aggregation.json`. We provide a helper download script: `download_scannet_files.py`. This file downloads only the relevant portion of the scannet dataset we need. You still need to download the `download-scannet-v2.py` after filling the ScanNet agreement form before using this helper script. Additionally, you might need to do some modifications to the `download-scannet-v2.py`, for eg. removing the `input("")` that requires a manual keyboard input for each scene. 
 
 
 ## Processing the Mesh/PointCloud Data
