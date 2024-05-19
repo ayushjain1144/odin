@@ -110,7 +110,7 @@ def convert_scannet_to_coco(path, phase, scannet200=False):
 
     parent_dir = os.path.dirname(path)
     dataset_name = 'scannet200' if scannet200 else 'scannet'
-    json.dump(coco_output, open(f'{parent_dir}/{dataset_name}_{phase}_highres.coco.json','w'))
+    json.dump(coco_output, open(f'{parent_dir}/{dataset_name}_highres_{phase}.coco.json','w'))
 
 
 
