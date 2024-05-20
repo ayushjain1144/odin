@@ -1,7 +1,7 @@
 
 # SAVING DIRECTORY - CHANGE THIS
 DATA_DIR = '/projects/katefgroup/language_grounding/SEMSEG_100k_reproduce/ai2thor_frames_512'
-SPLITS_PATH = 'splits/scannet'
+SPLITS_PATH = 'splits/ai2thor_splits'
 
 SPLITS = {
     'train':   f'{SPLITS_PATH}/scannet_train_512.txt',
