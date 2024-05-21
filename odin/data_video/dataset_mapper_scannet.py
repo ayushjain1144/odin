@@ -648,9 +648,6 @@ class ScannetDatasetMapper:
                 instances = Instances(image_shape)
                 instances.gt_classes = classes
                 
-                if self.cfg.TEST_CLASS_AGNOSTIC and not self.is_train:
-                    instances.gt_classes = torch.ones_like(classes)
-                    
                 instances.instance_ids = instance_ids
                 if len(masks) == 0:
                     instances.gt_masks = torch.zeros((0, image.shape[-2], image.shape[-1]))
