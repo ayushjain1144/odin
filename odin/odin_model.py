@@ -992,11 +992,57 @@ class ODIN(nn.Module):
                 images, [bs, v, H_padded, W_padded], targets,
                 num_classes, decoder_3d, multiview_data
             )
-
                 
             return processed_results
 
-    
+    def visualize_pred_on_scannet(
+            self, input_per_image, processed_result,
+            gt_targets, index, scannet_idxs=None
+    ):
+        pc = input_per_image['scannet_coords'].cpu().numpy()
+        if scannet_idxs is not None:
+            pc = pc[scannet_idxs.cpu().numpy()]
+
+        color = (input_per_image['scannet_color'] / 255.0).cpu().numpy()
+        color = np.clip(color, 0, 1)
+        if scannet_idxs is not None:
+            color = color[scannet_idxs.cpu().numpy()]
+
+        scene_name = input_per_image['file_name'].split('/')[-3]
+        pred_scores = processed_result["instances_3d"]['pred_scores']
+        pred_masks = processed_result["instances_3d"]['pred_masks']
+        pred_labels = processed_result["instances_3d"]['pred_classes']
+
+        # sort by scores in ascending order
+        sort_idx = torch.argsort(pred_scores)
+        pred_masks = pred_masks.permute(1, 0)[sort_idx].cpu().numpy()
+        pred_labels = pred_labels[sort_idx].cpu().numpy()
+
+        # threshold by scores > 0.5
+        pred_scores = pred_scores[sort_idx].cpu().numpy()
+        conf = pred_scores > 0.5
+        pred_masks = pred_masks[conf]
+        pred_labels = pred_labels[conf]
+
+        gt_masks = gt_targets[index]['masks'].cpu().numpy()
+        if "max_valid_points" in gt_targets[index]:
+            max_valid_point = gt_targets[index]["max_valid_points"]
+            gt_masks = gt_masks[:, :max_valid_point]
+
+        gt_labels = gt_targets[index]['labels'].cpu().numpy()
+
+        valids = np.ones_like(pc[:, 0]).astype(bool)
+
+        dataset_name = input_per_image['dataset_name']
+
+        vis_utils.plot_3d_offline(
+            pc, color, masks=pred_masks, valids=valids,
+            labels=pred_labels,
+            gt_masks=gt_masks, gt_labels=gt_labels, scene_name=scene_name,
+            data_dir=self.cfg.VISUALIZE_LOG_DIR,
+            mask_classes=self.cfg.SKIP_CLASSES, dataset_name=dataset_name,
+        )
+
     def visualize_pred_on_ours(
         self, index, images,
         shape,
@@ -1063,8 +1109,7 @@ class ODIN(nn.Module):
         valids[valid_idx] = True
 
         dataset_name = input_per_image['dataset_name']
-        
-        
+
         vis_utils.plot_3d_offline(
             our_pc, color, masks=pred_masks, valids=valids,
             labels=pred_labels,
@@ -1072,7 +1117,6 @@ class ODIN(nn.Module):
             data_dir=self.cfg.VISUALIZE_LOG_DIR, 
             mask_classes=self.cfg.SKIP_CLASSES, dataset_name=dataset_name,
         )     
-
 
     def prepare_targets(
             self, targets, images, valids=None
