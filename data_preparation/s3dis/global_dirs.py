@@ -1,6 +1,5 @@
-
 # SAVING DIRECTORY - CHANGE THIS
-DATA_DIR = '/projects/katefgroup/odin/s3dis'
+DATA_DIR = '/fsx-cortex/ayushjain1144/odin_data/SEMSEG_100k/s3dis_frames_fixed'
 SPLITS_PATH = 'splits/s3dis_splits'
 
 SPLITS = {

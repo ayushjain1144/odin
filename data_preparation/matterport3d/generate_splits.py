@@ -22,7 +22,7 @@ debug_split = np.random.choice(train_eval, 2, replace=False)
 data_path = 'm3d_splits'
 if not os.path.exists(data_path):
     os.makedirs(data_path)
-    
+
 # write all the splits to a file
 train_file_path = f'{data_path}/m3d_train.txt'
 val_file_path = f'{data_path}/m3d_val.txt'
@@ -32,7 +32,7 @@ train_eval_file_path = f'{data_path}/ten_scene.txt'
 with open(train_file_path, 'w') as f:
     for item in train:
         f.write("%s\n" % item)
-        
+
 with open(val_file_path, 'w') as f:
     for item in val:
         f.write("%s\n" % item)
@@ -44,4 +44,4 @@ with open(debug_file_path, 'w') as f:
 with open(train_eval_file_path, 'w') as f:
     for item in train_eval:
         f.write("%s\n" % item)
-        
+

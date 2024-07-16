@@ -1,4 +1,4 @@
-# Instructions (Coming Soon)
+# Instructions
 
 Look at `globals_dirs.py` and change the folder paths where you would like to store the data.
 

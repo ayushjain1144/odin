@@ -1,12 +1,15 @@
 import os
 import re
+import ipdb
 
 import numpy as np
 from fire import Fire
 from loguru import logger
 from natsort import natsorted
 
-from data_preparation.base_preprocessing import BasePreprocessing, load_ply
+from data_preparation.base_preprocessing import BasePreprocessing
+
+st = ipdb.set_trace
 
 
 class S3DISPreprocessing(BasePreprocessing):
@@ -24,6 +27,7 @@ class S3DISPreprocessing(BasePreprocessing):
         ),
         n_jobs: int = -1,
     ):
+        # n_jobs = 1
         super().__init__(data_dir, save_dir, modes, n_jobs)
 
         self.class_map = {
@@ -183,6 +187,7 @@ class S3DISPreprocessing(BasePreprocessing):
         pass
 
     def joint_database(self, train_modes=("Area_1", "Area_2", "Area_3", "Area_4", "Area_5", "Area_6")):
+        # train_modes = ("Area_5")
         for mode in train_modes:
             joint_db = []
             for let_out in train_modes:
@@ -190,7 +195,7 @@ class S3DISPreprocessing(BasePreprocessing):
                     continue
                 joint_db.extend(self._load_yaml(self.save_dir / (let_out + "_database.yaml")))
             self._save_yaml(self.save_dir / f"train_{mode}_database.yaml", joint_db)
-            
+ 
         joint_db = []
         for mode in train_modes:
             joint_db.extend(self._load_yaml(self.save_dir / (mode + "_database.yaml")))

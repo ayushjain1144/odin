@@ -7,7 +7,7 @@ from pycococreatortools import pycococreatortools
 import pycocotools.mask as mask_util
 
 from odin.global_vars import S3DIS_NAME_MAP
-from data_preparation.s3dis.globals_dirs import DATA_DIR, SPLITS
+from data_preparation.s3dis.global_dirs import DATA_DIR, SPLITS
 
 import ipdb
 st = ipdb.set_trace
@@ -25,16 +25,18 @@ LICENSES = [
 ]
 
 CATEGORIES = [
-    {'id': key, 'name': item, 'supercategory': 'nyu40' } for key, item in S3DIS_NAME_MAP.items() 
+    {'id': key, 'name': item, 'supercategory': 'nyu40'}
+    for key, item in S3DIS_NAME_MAP.items()
 ]
 
+
 def read_txt(path):
-  """Read txt file into lines.
-  """
-  with open(path) as f:
-    lines = f.readlines()
-  lines = [x.strip() for x in lines]
-  return lines
+    """Read txt file into lines.
+    """
+    with open(path) as f:
+        lines = f.readlines()
+    lines = [x.strip() for x in lines]
+    return lines
 
 
 def polygons_to_bitmask(polygons, height: int, width: int) -> np.ndarray:
@@ -79,29 +81,35 @@ def convert_scannet_to_coco(path, phase):
 
         scene_id = image_ids[index].split('/')[0]
         image_id = image_ids[index].split('/')[1]
-        image_size = Image.open(os.path.join(path, scene_id, 'color', image_id + '.png')).size 
+        image_size = Image.open(os.path.join(
+            path, scene_id, 'color', image_id + '.png')).size
 
         image_filename = os.path.join(scene_id, 'color', image_id + '.png')
-        image_info = pycococreatortools.create_image_info(coco_image_id, image_filename, image_size)
+        image_info = pycococreatortools.create_image_info(
+            coco_image_id, image_filename, image_size)
         coco_output['images'].append(image_info)
 
         depth_filename = os.path.join(scene_id, 'depth', image_id + '.png')
-        depth_info = pycococreatortools.create_image_info(coco_image_id, depth_filename, image_size)
+        depth_info = pycococreatortools.create_image_info(
+            coco_image_id, depth_filename, image_size)
         coco_output['depths'].append(depth_info)
 
         pose_filename = os.path.join(scene_id, 'pose', image_id + '.txt')
-        pose_info = pycococreatortools.create_image_info(coco_image_id, pose_filename, image_size)
+        pose_info = pycococreatortools.create_image_info(
+            coco_image_id, pose_filename, image_size)
         coco_output['poses'].append(pose_info)
-        
-        
-        intrinsic_filename = os.path.join(scene_id, 'intrinsic', image_id + '.txt')
-        pose_info = pycococreatortools.create_image_info(coco_image_id, intrinsic_filename, image_size)
+
+        intrinsic_filename = os.path.join(
+            scene_id, 'intrinsic', image_id + '.txt')
+        pose_info = pycococreatortools.create_image_info(
+            coco_image_id, intrinsic_filename, image_size)
         coco_output['intrinsics'].append(pose_info)
-        
+
         coco_image_id += 1
 
     parent_dir = os.path.dirname(path)
-    json.dump(coco_output, open(f'{parent_dir}/s3dis_area_5_{phase}.coco.json','w'))
+    json.dump(
+        coco_output, open(f'{parent_dir}/s3dis_area_5_{phase}.coco.json', 'w'))
 
 
 if __name__ == '__main__':

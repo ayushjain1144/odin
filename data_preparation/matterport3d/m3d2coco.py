@@ -1,38 +1,19 @@
 import os
-import argparse
-import datetime
-import csv
-import torch
 import numpy as np
 import json
 
 from PIL import Image
-from random import random
 from pycococreatortools import pycococreatortools
-from torchvision.transforms import Compose, ToTensor, Normalize, Resize
 import pycocotools.mask as mask_util
-import pycocotools
 
 from odin.global_vars import MATTERPORT_NAME_MAP
+from data_preparation.matterport3d.global_dirs import DATA_DIR, SPLITS
+
 import ipdb
 st = ipdb.set_trace
 
 
-SPLITS = {
-    'train':   'm3d_splits/m3d_train.txt',
-    'val':     'm3d_splits/m3d_val.txt',
-    'two_scene': 'm3d_splits/two_scene.txt',
-    'ten_scene': 'm3d_splits/ten_scene.txt',
-    'debug': 'm3d_splits/debug.txt',
-}
-
 INFO = {
-    "description": "ScanNet Dataset",
-    "url": "https://github.com/sekunde",
-    "version": "0.1.0",
-    "year": 2021,
-    "contributor": "Ji Hou",
-    "date_created": datetime.datetime.utcnow().isoformat(' ')
 }
 
 LICENSES = [
@@ -44,16 +25,18 @@ LICENSES = [
 ]
 
 CATEGORIES = [
-    {'id': key, 'name': item, 'supercategory': 'nyu40' } for key, item in MATTERPORT_NAME_MAP.items() 
+    {'id': key, 'name': item, 'supercategory': 'nyu40'}
+    for key, item in MATTERPORT_NAME_MAP.items()
 ]
 
+
 def read_txt(path):
-  """Read txt file into lines.
-  """
-  with open(path) as f:
-    lines = f.readlines()
-  lines = [x.strip() for x in lines]
-  return lines
+    """Read txt file into lines.
+    """
+    with open(path) as f:
+        lines = f.readlines()
+    lines = [x.strip() for x in lines]
+    return lines
 
 
 def polygons_to_bitmask(polygons, height: int, width: int) -> np.ndarray:
@@ -74,7 +57,6 @@ def polygons_to_bitmask(polygons, height: int, width: int) -> np.ndarray:
 
 
 def convert_scannet_to_coco(path, phase):
-    transform = Resize([512,640], Image.NEAREST)
     coco_output = {
         "info": INFO,
         "licenses": LICENSES,
@@ -95,7 +77,6 @@ def convert_scannet_to_coco(path, phase):
     print("images number in {}: {}".format(path, len(image_ids)))
 
     coco_image_id = 1
-    coco_ann_id = 1
     for index in range(len(image_ids)):
         print("{}/{}".format(index, len(image_ids)), end='\r')
 
@@ -104,41 +85,33 @@ def convert_scannet_to_coco(path, phase):
         image_size = Image.open(os.path.join(path, scene_id, 'color', image_id + '.jpg')).size 
 
         image_filename = os.path.join(scene_id, 'color', image_id + '.jpg')
-        image_info = pycococreatortools.create_image_info(coco_image_id, image_filename, image_size)
+        image_info = pycococreatortools.create_image_info(
+            coco_image_id, image_filename, image_size)
         coco_output['images'].append(image_info)
 
         depth_filename = os.path.join(scene_id, 'depth', image_id + '.png')
-        depth_info = pycococreatortools.create_image_info(coco_image_id, depth_filename, image_size)
+        depth_info = pycococreatortools.create_image_info(
+            coco_image_id, depth_filename, image_size)
         coco_output['depths'].append(depth_info)
 
         pose_filename = os.path.join(scene_id, 'pose', image_id + '.txt')
-        pose_info = pycococreatortools.create_image_info(coco_image_id, pose_filename, image_size)
+        pose_info = pycococreatortools.create_image_info(
+            coco_image_id, pose_filename, image_size)
         coco_output['poses'].append(pose_info)
-        
-        
+
         intrinsic_filename = os.path.join(scene_id, 'intrinsic', image_id + '.txt')
-        pose_info = pycococreatortools.create_image_info(coco_image_id, intrinsic_filename, image_size)
+        pose_info = pycococreatortools.create_image_info(
+            coco_image_id, intrinsic_filename, image_size)
         coco_output['intrinsics'].append(pose_info)
-        
+
         coco_image_id += 1
 
-    json.dump(coco_output, open(f'/projects/katefgroup/language_grounding/m3d_{phase}.coco.json','w'))
+    parent_dir = os.path.dirname(path)
+    json.dump(
+        coco_output, open(f'{parent_dir}/m3d_{phase}.coco.json', 'w'))
 
-
-def config():
-    # params
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--scannet_path', default='/projects/katefgroup/language_grounding/SEMSEG_100k/matterport_frames')
-    parser.add_argument('--phase', default='train')
-    opt = parser.parse_args()
-    return opt
 
 if __name__ == '__main__':
-    opt = config()
-    # phases = ['val', 'ten_scene', 'two_scene']
-    phases = ['two_scene', 'ten_scene']
-    # phases = ['train']
-    # phases = ['debug']
-    # phases = ['two_scene']
+    phases = ['train', 'val', 'ten_scene', 'two_scene']
     for phase in phases:
-        convert_scannet_to_coco(opt.scannet_path, phase)
+        convert_scannet_to_coco(DATA_DIR, phase)
