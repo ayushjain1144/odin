@@ -7,7 +7,7 @@ from tqdm import tqdm
 from pycococreatortools import pycococreatortools
 import pycocotools.mask as mask_util
 
-from odin.global_vars import NAME_MAP, SCANNET200_NAME_MAP
+from odin.global_vars import NAME_MAP20, SCANNET200_NAME_MAP
 from data_preparation.scannet.globals_dirs import DATA_DIR, SPLITS
 
 import ipdb
@@ -25,7 +25,7 @@ LICENSES = [
 ]
 
 CATEGORIES = [
-    {'id': key, 'name': item, 'supercategory': 'nyu40' } for key, item in NAME_MAP.items() 
+    {'id': key, 'name': item, 'supercategory': 'nyu40' } for key, item in NAME_MAP20.items() 
 ]
 
 CATEGORIES_200 = [
