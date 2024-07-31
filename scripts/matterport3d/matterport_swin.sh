@@ -1,6 +1,8 @@
 set -e
 
 export DETECTRON2_DATASETS="/projects/katefgroup/language_grounding/SEMSEG_100k"
+MATTERPORT_DATA_DIR="/path/to/train_validation_database.yaml"
+
 OMP_NUM_THREADS=8 CUDA_VISIBLE_DEVICES=0,1 python train_odin.py  --dist-url='tcp://127.0.0.1:1982' --num-gpus 2 --config-file configs/scannet_context/swin_3d.yaml \
 OUTPUT_DIR /projects/katefgroup/language_grounding/bdetr2/arxiv_reproduce/matterport_swinb SOLVER.IMS_PER_BATCH 4 \
 SOLVER.CHECKPOINT_PERIOD 4000 TEST.EVAL_PERIOD 4000 \
@@ -36,7 +38,8 @@ MODEL.MASK_FORMER.MASK_WEIGHT 15.0 \
 USE_WANDB True \
 USE_MLP_POSITIONAL_ENCODING True \
 INPUT.MIN_SIZE_TEST 512 \
-INPUT.MAX_SIZE_TEST 512 
+INPUT.MAX_SIZE_TEST 512 \
+MATTERPORT_DATA_DIR $MATTERPORT_DATA_DIR
 
 
 # reduce lr at 68k iterations to 1e-5, get the best checkpoint at 16k iterations for instance segmentation \

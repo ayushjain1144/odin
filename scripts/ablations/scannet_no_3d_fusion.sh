@@ -1,6 +1,8 @@
 set -e
 
 export DETECTRON2_DATASETS="/projects/katefgroup/language_grounding/SEMSEG_100k"
+SCANNET_DATA_DIR="/path/to/train_validation_database.yaml"
+
 OMP_NUM_THREADS=8 CUDA_VISIBLE_DEVICES=0,1 python train_odin.py  --dist-url='tcp://127.0.0.1:8474' --num-gpus 2  --resume --config-file configs/scannet_context/3d.yaml \
 OUTPUT_DIR /projects/katefgroup/language_grounding/bdetr2/arxiv_reproduce/ablation_scannet_no_3d_fusion SOLVER.IMS_PER_BATCH 6 \
 SOLVER.CHECKPOINT_PERIOD 4000 TEST.EVAL_PERIOD 4000 \
@@ -34,7 +36,8 @@ MAX_FRAME_NUM -1 \
 MODEL.MASK_FORMER.DICE_WEIGHT 6.0 \
 MODEL.MASK_FORMER.MASK_WEIGHT 15.0 \
 USE_WANDB True \
-USE_MLP_POSITIONAL_ENCODING True
+USE_MLP_POSITIONAL_ENCODING True \
+SCANNET_DATA_DIR $SCANNET_DATA_DIR
 
 # MODEL.WEIGHTS '/projects/katefgroup/language_grounding/odin_arxiv/m2f_coco.pkl' \
 # reduce lr at 32k iterations to 1e-5, get the best checkpoint at 1.5k iterations

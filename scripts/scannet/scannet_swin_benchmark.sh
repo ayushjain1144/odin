@@ -1,6 +1,8 @@
 set -e
 
 export DETECTRON2_DATASETS="/projects/katefgroup/language_grounding/SEMSEG_100k"
+SCANNET_DATA_DIR="/path/to/train_validation_database.yaml"
+
 OMP_NUM_THREADS=8 CUDA_VISIBLE_DEVICES=0,1 python train_odin.py  --dist-url='tcp://127.0.0.1:8474' --num-gpus 2 --config-file configs/scannet_context/swin_3d.yaml \
 OUTPUT_DIR /projects/katefgroup/language_grounding/bdetr2/arxiv_reproduce/scannet_swinb_benchmark SOLVER.IMS_PER_BATCH 4 \
 SOLVER.CHECKPOINT_PERIOD 4000 TEST.EVAL_PERIOD 4000 \
@@ -34,7 +36,8 @@ MAX_FRAME_NUM 250 \
 MODEL.MASK_FORMER.DICE_WEIGHT 6.0 \
 MODEL.MASK_FORMER.MASK_WEIGHT 15.0 \
 USE_WANDB True \
-USE_MLP_POSITIONAL_ENCODING True
+USE_MLP_POSITIONAL_ENCODING True \
+SCANNET_DATA_DIR $SCANNET_DATA_DIR
 # EXPORT_BENCHMARK_DATA True \
 # EXPORT_BENCHMARK_PATH "/projects/katefgroup/language_grounding/benchmark_evaluations/odin_arxiv_benchmark_scannet" \
 # SCANNET_DATA_DIR '/projects/katefgroup/language_grounding/mask3d_processed/scannet/test_database.yaml' \

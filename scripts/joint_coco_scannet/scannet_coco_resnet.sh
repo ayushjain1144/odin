@@ -2,6 +2,8 @@ set -e
 
 export DETECTRON2_DATASETS="/projects/katefgroup/language_grounding/SEMSEG_100k"
 export DETECTRON2_DATASETS_2D="/projects/katefgroup/datasets"
+SCANNET_DATA_DIR="/path/to/train_validation_database.yaml"
+
 OMP_NUM_THREADS=8 CUDA_VISIBLE_DEVICES=0,1 python train_odin.py  --dist-url='tcp://127.0.0.1:7292' --num-gpus 2 --resume  --config-file configs/scannet_context/3d.yaml \
 OUTPUT_DIR /projects/katefgroup/language_grounding/bdetr2/arxiv_reproduce/scannet_coco_joint SOLVER.IMS_PER_BATCH 6 \
 SOLVER.CHECKPOINT_PERIOD 4000 TEST.EVAL_PERIOD 4000 \
@@ -59,7 +61,8 @@ INPUT.IMAGE_SIZE_2D 1024 \
 INPUT.MIN_SIZE_TEST_2D 800 \
 INPUT.MAX_SIZE_TEST_2D 1333 \
 AUGMENT_WITH_3D_SCALE True \
-PROB "[0.3, 0.7]"
+PROB "[0.3, 0.7]" \
+SCANNET_DATA_DIR $SCANNET_DATA_DIR
 
 # MODEL.WEIGHTS '/projects/katefgroup/language_grounding/bdetr2/arxiv_reproduce/scannet_coco_joint_train_ckpt/model_0087999.pth'
 # reduce lr at 88k iterations to 1e-5 and get the best cckpt at 19k iterations
