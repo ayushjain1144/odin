@@ -34,7 +34,7 @@ Please refer to README in data_preparation folder for individual datasets. For e
 
 We provide training scripts for various datasets in `scripts` folder. Please refer to these scripts for training ODIN. 
 
-- Modify `DETECTRON2_DATASETS` to the path where you store the Posed RGB-D data. 
+- Modify `DETECTRON2_DATASETS` to the path where you store the Posed RGB-D data. You might also need to change 3D Mesh point cloud paths (like `SCANNET_DATA_DIR`) for each script. You may want to find these variables in `odin/config.py` and permanently modify these paths.
 - If you want to train a model on 3D datasets, modify MODEL.WEIGHTS to load pre-trained 2D weights. We use weights from Mask2Former. You can download the [Mask2Former-ResNet](https://huggingface.co/katefgroup/odin/resolve/main/m2f_coco.pkl) and [Mask2Former-Swin Weights](https://huggingface.co/katefgroup/odin/resolve/main/m2f_coco_swin.pkl). MODEL.WEIGHTS can also accept link to the checkpoint as well, so you can directly supply these links as the argument value.
 - ODIN Pre-trained weights are provided below in the Model-Zoo. Simply point to these weights using the MODEL.WEIGHTS to run inference. You would also need to add `--eval-only` flag for running evaluation. 
 - `SOLVER.IMS_PER_BATCH` controls the batch size. This is effective batch size i.e. if you are running on 2 GPUs and the batch size is set to 6, you are using bs=3 per GPU. 
