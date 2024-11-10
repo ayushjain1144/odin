@@ -16,7 +16,7 @@ python data_preparation/matterport3d/process_matterport_3d.py preprocess --data_
 You can download the preprocessed RGB-D data (~80G) for all scenes by
 
 ```bash
-gdown --id 1XVaQKqQhbvJ1EOgwy1p-RSmukRUY9j32
+gdown --id 1mWU8jxrAlxsci7ste07qUo6S895kDt-f
 ```
 
 ## Process RGB-D Images on your own (Optional)
