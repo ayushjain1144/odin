@@ -146,7 +146,7 @@ class ScannetDatasetMapper:
         self.class_names = {k: v for k, v in enumerate(MetadataCatalog.get(dataset_name).thing_classes)}
         self.num_classes = len(self.class_names)
         
-        if self.cfg.MODEL.OPEN_VOCAB and not self.cfg.DETIC:
+        if self.cfg.MODEL.OPEN_VOCAB:
             # add "__background__" class
             self.class_names[self.num_classes] = "__background__"
 
