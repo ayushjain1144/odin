@@ -108,18 +108,9 @@ class ODINHungarianMatcher(nn.Module):
 
         # Iterate through batch size
         for b in range(bs):
-            if self.cfg.MODEL.OPEN_VOCAB and self.cfg.DETIC:
-                out_prob = outputs['pred_logits'][b].sigmoid()
-                tgt_ids = targets[b]['labels']
-                cost_class = -out_prob[:, tgt_ids]
-            elif self.cfg.MODEL.OPEN_VOCAB and not self.cfg.NON_PARAM_SOFTMAX:
-                out_prob = outputs["pred_logits"][b].sigmoid()
-                positive_map = targets[b]["positive_map"]
-                cost_class = -torch.matmul(out_prob, positive_map.transpose(0, 1)) 
-            else:
-                out_prob = outputs["pred_logits"][b].softmax(-1)  # [num_queries, num_classes]
-                tgt_ids = targets[b]["labels"]
-                cost_class = -out_prob[:, tgt_ids]
+            out_prob = outputs["pred_logits"][b].softmax(-1)  # [num_queries, num_classes]
+            tgt_ids = targets[b]["labels"]
+            cost_class = -out_prob[:, tgt_ids]
             
             out_mask = outputs["pred_masks"][b]  # [num_queries, T, H_pred, W_pred]
 

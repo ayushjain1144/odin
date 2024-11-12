@@ -950,7 +950,7 @@ class ODIN(nn.Module):
             segments=scannet_segments_batched if self.cfg.USE_GHOST_POINTS else segments,
             decoder_3d=decoder_3d, 
             captions=captions,
-            positive_map_od=[targets[i]['positive_map_od'] for i in range(len(targets))] if self.cfg.MODEL.OPEN_VOCAB and not self.cfg.DETIC else None,
+            positive_map_od=[targets[i]['positive_map_od'] for i in range(len(targets))] if self.cfg.MODEL.OPEN_VOCAB,
             num_classes=num_classes, 
             scene_names=scene_names
         )
