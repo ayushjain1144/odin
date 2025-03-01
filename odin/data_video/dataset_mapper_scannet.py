@@ -7,6 +7,7 @@ import torch
 from operator import itemgetter
 from natsort import natsorted
 import yaml
+from pathlib import Path
 
 from detectron2.data import DatasetCatalog
 from detectron2.config import configurable
@@ -181,17 +182,17 @@ class ScannetDatasetMapper:
 
         # path to SEMSEG_100k
         if 'scannet200' in dataset_name:
-            label_db_filepath = self.cfg.SCANNET200_DATA_DIR
+            self.label_db_filepath = self.cfg.SCANNET200_DATA_DIR
         elif 'scannet' in dataset_name:
-            label_db_filepath = self.cfg.SCANNET_DATA_DIR
+            self.label_db_filepath = self.cfg.SCANNET_DATA_DIR
         elif 's3dis' in dataset_name:
-            label_db_filepath = self.cfg.S3DIS_DATA_DIR
+            self.label_db_filepath = self.cfg.S3DIS_DATA_DIR
         elif 'matterport' in dataset_name:
-            label_db_filepath = self.cfg.MATTERPORT_DATA_DIR
+            self.label_db_filepath = self.cfg.MATTERPORT_DATA_DIR
 
         if (self.cfg.USE_GHOST_POINTS) and 'ai2thor' not in dataset_name:
             # label_db_filepath = f"{data_dir}/train_validation_database.yaml"
-            with open(label_db_filepath) as f:
+            with open(self.label_db_filepath) as f:
                 data = yaml.load(f, Loader=yaml.FullLoader)
 
             self.scannet_data = {}
@@ -671,7 +672,11 @@ class ScannetDatasetMapper:
             if 's3dis' in self.dataset_name:
                 sub1, sub2 = filepath.split('s3dis')
                 filepath = f"{sub1}/SEMSEG_100k/s3dis/{sub2}"
-            points = np.load(filepath)
+                
+            parent_file = Path(self.label_db_filepath).parent
+            new_filepath = '/'.join([str(parent_file)] + filepath.split('/')[-2:])
+            points = np.load(new_filepath)
+            
             coordinates, color, _, segments, labels = (
                 points[:, :3],
                 points[:, 3:6],
