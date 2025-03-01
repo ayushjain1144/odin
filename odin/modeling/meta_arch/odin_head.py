@@ -188,7 +188,7 @@ class ODINHead(nn.Module):
         # mask_features (B*num_views, F_m, H_m, W_m), m is largest f_map (res2)
         # multi_scale_features: feats of small scales [res5, res4, res3]
         if decoder_3d:
-            if self.cfg.USE_GHOST_POINTS:
+            if self.cfg.USE_GHOST_POINTS and not self.cfg.DO_FEATURE_INTERPOLATION_LATER:
                 mask_features_xyz = scannet_pc
             elif self.cfg.INPUT.VOXELIZE:
                 mask_features_xyz = scatter_mean(
@@ -198,6 +198,7 @@ class ODINHead(nn.Module):
         # Feed to Transformer decoder
         if shape is None:
             shape = [multi_scale_features[0].shape[0], 1]
+            
         predictions = self.predictor(
             x=multi_scale_features,
             mask_features=mask_features,
@@ -211,6 +212,7 @@ class ODINHead(nn.Module):
             decoder_3d=decoder_3d,
             captions=captions,
             positive_map_od=positive_map_od,
-            num_classes=num_classes
+            num_classes=num_classes,
+            scannet_pc=scannet_pc
         )
         return predictions

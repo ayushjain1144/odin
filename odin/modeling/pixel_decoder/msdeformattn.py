@@ -498,7 +498,7 @@ class MSDeformAttnPixelDecoder(nn.Module):
         
         # append `out` with extra FPN levels
         # Reverse feature maps into top-down order (from low to high resolution)
-        if decoder_3d and self.cfg.USE_GHOST_POINTS:
+        if decoder_3d and self.cfg.USE_GHOST_POINTS and not self.cfg.DO_FEATURE_INTERPOLATION_LATER:
             # interpolate features for skip connections
             assert self.num_fpn_levels == 1
             f = self.in_features[:self.num_fpn_levels][0]

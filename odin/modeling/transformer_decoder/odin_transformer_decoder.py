@@ -270,7 +270,8 @@ class ODINMultiScaleMaskedTransformerDecoder(nn.Module):
         x_xyz=None, mask = None, mask_features_xyz=None,
         multiview_data=None, 
         segments=None, scannet_p2v=None, decoder_3d=False, 
-        captions=None, positive_map_od=None, num_classes=None):
+        captions=None, positive_map_od=None, num_classes=None,
+        scannet_pc=None):
 
         voxelize = decoder_3d and self.cfg.INPUT.VOXELIZE
 
@@ -293,7 +294,7 @@ class ODINMultiScaleMaskedTransformerDecoder(nn.Module):
                 ) # b, n, c
 
         else:
-            if ((self.cfg.HIGH_RES_INPUT and not self.training and not self.cfg.USE_GHOST_POINTS)) and self.cfg.INPUT.VOXELIZE:
+            if ((self.cfg.HIGH_RES_INPUT and not self.training and not self.cfg.USE_GHOST_POINTS)) and self.cfg.INPUT.VOXELIZE or self.cfg.DO_FEATURE_INTERPOLATION_LATER:
                 mask_features = mask_features.reshape(bs, v, -1, mask_features.shape[-2], mask_features.shape[-1]).permute(0, 1, 3, 4, 2).flatten(1, 3)
                 mask_features = scatter_mean(
                     mask_features,
@@ -306,7 +307,7 @@ class ODINMultiScaleMaskedTransformerDecoder(nn.Module):
                 mask_features = mask_features[..., 0]
                 # voxelize (mask features are already voxelized)
                 assert mask_features_xyz.shape[-2] == mask_features.shape[-1]
-                if self.cfg.USE_SEGMENTS:
+                if self.cfg.USE_SEGMENTS and not self.cfg.DO_FEATURE_INTERPOLATION_LATER:
                     mask_features = scatter_mean(
                         mask_features.permute(0, 2, 1),
                         segments, dim=1
@@ -453,6 +454,32 @@ class ODINMultiScaleMaskedTransformerDecoder(nn.Module):
             predictions_mask.append(outputs_mask)
 
         assert len(predictions_class) == self.num_layers + 1
+        
+        if self.cfg.DO_FEATURE_INTERPOLATION_LATER:
+            predictions_mask = [
+                interpolate_feats_3d(
+                    predictions_mask[i].permute(0, 2, 1),
+                    mask_features_xyz,
+                    torch.arange(mask_features_xyz.shape[1], device=mask_features_xyz.device)[None].repeat(bs, 1),
+                    scannet_pc, 
+                    scannet_p2v,
+                    [bs, 1],
+                    num_neighbors=self.cfg.INTERP_NEIGHBORS,
+                    voxelize=self.cfg.INPUT.VOXELIZE,
+                )
+                for i in range(len(predictions_mask))
+            ]
+            
+            if self.cfg.USE_SEGMENTS:
+                with autocast(enabled=False):
+                    predictions_mask = [
+                        scatter_mean(
+                            predictions_mask[i].permute(0, 2, 1).float(),
+                            segments, dim=1
+                        ).permute(0, 2, 1).to(predictions_mask[i].dtype)
+                        for i in range(len(predictions_mask))
+                    ]
+            
 
         out = {
             'text_attn_mask': text_attn_mask,
@@ -481,7 +508,7 @@ class ODINMultiScaleMaskedTransformerDecoder(nn.Module):
             outputs_class = self.class_embed(decoder_output)
         mask_embed = self.mask_embed(decoder_output)
 
-        if self.cfg.USE_SEGMENTS:
+        if self.cfg.USE_SEGMENTS and not self.cfg.DO_FEATURE_INTERPOLATION_LATER:
             segment_mask = torch.einsum("bqc,bcn->bqn", mask_embed, mask_features)
             output_mask = self.voxel_map_to_source(
                 segment_mask.permute(0, 2, 1), segments
@@ -504,7 +531,7 @@ class ODINMultiScaleMaskedTransformerDecoder(nn.Module):
         attn_mask = (attn_mask.sigmoid().unsqueeze(1).repeat(1, self.num_heads, 1, 1).flatten(0, 1) < 0.5).bool()
         attn_mask = attn_mask.detach()
 
-        if self.cfg.USE_SEGMENTS:
+        if self.cfg.USE_SEGMENTS and not self.cfg.DO_FEATURE_INTERPOLATION_LATER:
             output_mask = segment_mask
 
         return outputs_class, output_mask, attn_mask

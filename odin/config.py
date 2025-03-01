@@ -232,6 +232,7 @@ def add_maskformer2_video_config(cfg):
     cfg.USE_MLP_POSITIONAL_ENCODING = False
     cfg.PROB = None
     cfg.EXPORT_BENCHMARK_PATH = None
+    cfg.DO_FEATURE_INTERPOLATION_LATER = False
     
     # Open Vocab configs
     cfg.MODEL.OPEN_VOCAB = False
