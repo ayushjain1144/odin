@@ -40,6 +40,12 @@ You can skip this if you just want to use our preprocessed RGB-D data
  python data_preparation/scannet/preprocess_sens.sh 
 ```
 
+Run the following script to inpaint depth (where the sensor depth has holes). Make sure to modify the data path in `inapint_depth.py` to point to your RGB-D data folder
+
+```
+python data_preparation/inpaint_depth.py
+```
+
 ## Generate jsons in COCO Format
 
 For ScanNet, execute:
