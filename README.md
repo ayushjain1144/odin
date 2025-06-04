@@ -123,13 +123,12 @@ If you find ODIN useful in your research, please consider citing:
 
 
 ```BibTeX
-@misc{jain2024odin,
-      title={ODIN: A Single Model for 2D and 3D Perception}, 
-      author={Ayush Jain and Pushkal Katara and Nikolaos Gkanatsios and Adam W. Harley and Gabriel Sarch and Kriti Aggarwal and Vishrav Chaudhary and Katerina Fragkiadaki},
-      year={2024},
-      eprint={2401.02416},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{jain2024odin,
+  title={Odin: a single model for 2D and 3D segmentation},
+  author={Jain, Ayush and Katara, Pushkal and Gkanatsios, Nikolaos and Harley, Adam W and Sarch, Gabriel and Aggarwal, Kriti and Chaudhary, Vishrav and Fragkiadaki, Katerina},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={3564--3574},
+  year={2024}
 }
 ```
 
