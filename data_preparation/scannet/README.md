@@ -3,11 +3,14 @@
 Look at `data_preparation/dataset/globals_dirs.py` and change the folder paths where you would like to store the data.
 
 
-## Downloading ScanNet Mesh/PointCloud Data
+## 0. [New] Pre-processed scene data
+- Try downloading processed data from [HERE](https://huggingface.co/katefgroup/odin/resolve/main/mask3d_processed.zip). These are the yaml files that you will end up generating by following steps 1. and 2. Try this preprocessed data, and if this works, you can skip steps 1. and 2. Please make sure to still sign the scannet's terms and conditions of use. 
+
+## 1. Downloading ScanNet Mesh/PointCloud Data
 - Download ScanNet v2 data from [HERE](https://github.com/ScanNet/ScanNet). Let DATA_ROOT be the path to folder that contains the downloaded annotations. Under DATA_ROOT there should be a folder scans. Under scans there should be folders with names like scene0001_01. We need `_vh_clean_2.ply`, `_vh_clean_2.0.010000.segs.json`, `_vh_clean_2.labels.ply`, `_vh_clean.aggregation.json`. We provide a helper download script: `download_scannet_files.py`. This file downloads only the relevant portion of the scannet dataset we need. You still need to download the `download-scannet-v2.py` after filling the ScanNet agreement form before using this helper script. Additionally, you might need to do some modifications to the `download-scannet-v2.py`, for eg. removing the `input("")` that requires a manual keyboard input for each scene. 
 
 
-## Processing the Mesh/PointCloud Data
+## 2. Processing the Mesh/PointCloud Data
  
 For ScanNet, execute
 
@@ -23,14 +26,14 @@ Similarly, change  `SCANNET200_DATA_DIR` in `odin/config.py` to the `SAVE_DATA/t
 
 
 
-## Pre-processed RGB-D image Data
+## 3. Pre-processed RGB-D image Data
 We provide preprocessed RGB-D data (~80G) for all scenes. You can downloading it using gdown in the data directory.
 
 ```bash
 gdown --id 1Xq84J9Gl9CVns_4Q0gDBxcPoA7hSf-WY
 ```
 
-## Process RGB-D Images on your own (Optional)
+## 4. Process RGB-D Images on your own (Optional)
 You can skip this if you just want to use our preprocessed RGB-D data
 
 - First download the .sens files as well by using `--type .sens` argument with the scannet download script. 
@@ -46,7 +49,7 @@ Run the following script to inpaint depth (where the sensor depth has holes). Ma
 python data_preparation/inpaint_depth.py
 ```
 
-## Generate jsons in COCO Format
+## 5. Generate jsons in COCO Format
 
 For ScanNet, execute:
 ```bash
@@ -56,4 +59,6 @@ python data_preparation/scannet/scannet2coco.py
 For ScanNet200, add `--scannet200` to the above command
 
 
-## Instructions for setting up test set (Coming Soon)
+## Instructions for setting up test set 
+
+For evaluation on the test set, you can use the test_database.yaml files from the preprocessed data we provide that you might have downloaded already from Step 0. It is also [here] (https://huggingface.co/katefgroup/odin/resolve/main/mask3d_processed.zip)
