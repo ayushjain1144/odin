@@ -22,11 +22,12 @@ from .modeling.criterion import ODINSetCriterion
 from .modeling.matcher import ODINHungarianMatcher
 from .utils.memory import retry_if_cuda_oom
 from .utils.util_video_to_3d import convert_video_instances_to_3d
+from .utils.util_3d import get_bbox_from_mask
 
 from odin.global_vars import LEARNING_MAP, LEARNING_MAP20, SCANNET200_LEARNING_MAP, \
     S3DIS_NAME_MAP, \
     MATTERPORT_LEARNING_MAP, LEARNING_MAP_INV, SCANNET200_LEARNING_MAP_INV, \
-    MATTERPORT_ALL_CLASSES_TO_21
+    MATTERPORT_ALL_CLASSES_TO_21, SCANNET200_NAME_MAP, NAME_MAP20
 
 from odin.data_video.sentence_utils import convert_od_to_grounding_simple, convert_grounding_to_od_logits
 
@@ -341,7 +342,7 @@ class ODIN(nn.Module):
                 scannet_p2vs.append(torch.zeros(1, device=self.device, dtype=torch.int64))
                 scannet_color_processed[-1] = torch.zeros(1, 3, device=self.device, dtype=torch.float32)
             else:
-                scannet_p2v = voxelization(scennet_pc_processed[-1][None], 0.02)[0]
+                scannet_p2v = voxelization(scennet_pc_processed[-1][None], self.cfg.INPUT.VOXEL_SIZE[0])[0]
                 scannet_p2vs.append(scannet_p2v)
 
             # extract masks and labels
@@ -653,13 +654,16 @@ class ODIN(nn.Module):
 
         return mask_pred_results
 
-    def export_pred_benchmark(self, processed_results, scene_name, dataset_name):
+    def export_pred_benchmark(self, processed_results, scene_name, dataset_name, benchmark=False, pcs=None):
         # for instance segmentation
         root_path = self.cfg.EXPORT_BENCHMARK_PATH
-        if 'scannet200' in dataset_name:
+        # for now we only want to export scannet200 labels for scannetpp
+        if 'scannet200' in dataset_name or 'scannetpp' in dataset_name:
             learning_map_inv = SCANNET200_LEARNING_MAP_INV
+            name_map = SCANNET200_NAME_MAP
         else:
             learning_map_inv = LEARNING_MAP_INV
+            name_map = NAME_MAP20
             
         base_path = f"{root_path}/instance_evaluation"
         pred_mask_path = f"{base_path}/pred_mask"
@@ -675,13 +679,21 @@ class ODIN(nn.Module):
             for instance_id in range(len(pred_classes)):
                 real_id += 1
                 pred_class = pred_classes[instance_id]
+                clsss_name = name_map[pred_class]
                 pred_class =  learning_map_inv[pred_class]
                 score = scores[instance_id]
                 mask = pred_masks[:, instance_id].astype("uint8")
 
                 np.savetxt(f"{pred_mask_path}/{file_name}_{real_id}.txt", mask, fmt="%d")
-                fout.write(f"pred_mask/{file_name}_{real_id}.txt {pred_class} {score}\n")
+                if benchmark:
+                    fout.write(f"pred_mask/{file_name}_{real_id}.txt {pred_class} {score}\n")
+                else:
+                    # also get and save the bounding box of the instance
+                    bbox = get_bbox_from_mask(mask, pcs)
+                    fout.write(f"pred_mask/{file_name}_{real_id}.txt {pred_class} {score} {clsss_name} {bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]} {bbox[4]} {bbox[5]}\n")
         
+        if not benchmark:
+            return
         # for semantic segmentation
         base_path = f"{root_path}/semantic_evaluation"
         Path(base_path).mkdir(parents=True, exist_ok=True)
@@ -741,7 +753,12 @@ class ODIN(nn.Module):
         
             if self.cfg.EXPORT_BENCHMARK_DATA:
                 self.export_pred_benchmark(
-                    processed_results[-1], batched_inputs[i]['file_name'].split('/')[-3], dataset_name=batched_inputs[i]['dataset_name'])
+                    processed_results[-1],
+                    batched_inputs[i]['file_name'].split('/')[-3],
+                    dataset_name=batched_inputs[i]['dataset_name'],
+                    benchmark=not self.cfg.JUST_DUMP_PREDS,
+                    pcs=batched_inputs[i]['scannet_coords']
+                )
                 return None
                 
             if self.cfg.VISUALIZE:
@@ -861,6 +878,8 @@ class ODIN(nn.Module):
         bs = len(batched_inputs)
         v = len(batched_inputs[0]["images"])
         
+        print(f"Number of frames: {v}")
+        
         # important to check this when joint joint training
         decoder_3d = torch.tensor(sum([batched_input["decoder_3d"] for batched_input in batched_inputs]), device=self.device)
         if self.cfg.MULTI_TASK_TRAINING and self.training:
@@ -972,6 +991,10 @@ class ODIN(nn.Module):
                 
             assert len(set([len(batched_input['all_classes']) for batched_input in batched_inputs])) == 1, "all targets should have the same number of classes"
             num_classes = max([batched_input['num_classes'] for batched_input in batched_inputs])
+
+            # for scannetpp we only want to export 200 labels from scannet200 for now
+            if 'scannetpp' in batched_inputs[0]['dataset_name'] and self.cfg.JUST_DUMP_PREDS:
+                num_classes = 200
             
             mask_cls_results = outputs["pred_logits"]
             mask_pred_results = outputs["pred_masks"]

@@ -128,7 +128,7 @@ def add_maskformer2_config(cfg):
     cfg.TEST.EVAL_SPARSE = False
     cfg.MODEL.OPEN_VOCAB = False
     cfg.MODEL.MASK_FORMER.TRAIN_NUM_POINTS_2D = cfg.MODEL.MASK_FORMER.TRAIN_NUM_POINTS
-  
+
 
 def add_maskformer2_video_config(cfg):
     # video data
@@ -232,7 +232,10 @@ def add_maskformer2_video_config(cfg):
     cfg.USE_MLP_POSITIONAL_ENCODING = False
     cfg.PROB = None
     cfg.EXPORT_BENCHMARK_PATH = None
-    
+
+    cfg.JUST_DUMP_PREDS = False
+    cfg.SCANNETPP_DATA_DIR = None
+
     # Open Vocab configs
     cfg.MODEL.OPEN_VOCAB = False
     cfg.MODEL.LANG_FREEZE_BACKBONE = True

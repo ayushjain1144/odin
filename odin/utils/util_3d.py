@@ -370,3 +370,33 @@ def convert_3d_to_2d_dict_format_semantic(data_dict):
 
     return OrderedDict([('3d_semantic_per_class', segm_per_class), ('3d_semantic', segm)])
 
+
+def _set_axis_align_bbox(pc):
+    # Compute object bounding box.
+    # pc has shape (number_of_points, 3)
+    if pc.shape[0] == 0:
+        print("No points in pc")
+        return np.array([0, 0, 0, 0, 0, 0])
+
+    max_ = np.max(pc, axis=0)
+    min_ = np.min(pc, axis=0)
+
+    cx, cy, cz = (max_ + min_) / 2.0
+    lx, ly, lz = max_ - min_
+
+    xmin = cx - lx / 2.0
+    xmax = cx + lx / 2.0
+    ymin = cy - ly / 2.0
+    ymax = cy + ly / 2.0
+    zmin = cz - lz / 2.0
+    zmax = cz + lz / 2.0
+
+    return np.array([xmin, ymin, zmin, xmax, ymax, zmax])
+
+
+def get_bbox_from_mask(mask, pcs):
+    if mask.sum() == 0:
+        print("No points in mask")
+        return np.array([0, 0, 0, 0, 0, 0])
+    bbox = _set_axis_align_bbox(pcs[mask.nonzero()[0], :].numpy())
+    return bbox
