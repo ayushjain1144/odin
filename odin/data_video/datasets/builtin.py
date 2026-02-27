@@ -15,6 +15,13 @@ from detectron2.data.datasets.builtin import register_all_coco, _PREDEFINED_SPLI
 from detectron2.data import DatasetCatalog, MetadataCatalog
 
 
+_PREDEFINED_SPLITS_SCANNETPP = {
+    "scannetpp_val_single": (
+        "scannetpp_frames", 
+        "scannetpp_val.coco.json"
+    )
+}
+
 _PREDEFINED_SPLITS_CONTEXT20_SCANNET_SINGLE_100K = {
     "scannet_context_instance_train_20cls_single_highres_100k": (
         "frames_square_highres",
@@ -206,6 +213,8 @@ def register_all_dataset_single(root, dataset_name="ai2thor"):
         split_dict = _PREDEFINED_SPLITS_MATTERPORT
     elif dataset_name == 'scannet200':
         split_dict = _PREDEFINED_SPLITS_CONTEXT20_SCANNET200_SINGLE_100K
+    elif dataset_name == "scannetpp":
+        split_dict = _PREDEFINED_SPLITS_SCANNETPP
     else:
         raise NotImplementedError("dataset_name {} not supported".format(dataset_name))
     for key, (image_root, json_file) in split_dict.items():
@@ -239,6 +248,9 @@ if __name__.endswith(".builtin"):
     
     # matterport register
     register_all_dataset_single(_root, dataset_name="matterport")
+    
+    # scannetpp register
+    register_all_dataset_single(_root, dataset_name="scannetpp")
 
     _root_2d = os.getenv("DETECTRON2_DATASETS_2D", "datasets")
     register_all_coco(_root_2d)

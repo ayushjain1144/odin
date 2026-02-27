@@ -419,3 +419,12 @@ def get_matterport_intrinsics(image_size, intrinsic_file=None):
     intrinsics[1] /= 640 / W
     
     return intrinsics
+
+
+def get_scannetpp_intrinsics(image_size, intrinsic_file=None):
+    H, W = image_size[:2]
+    intrinsics = np.loadtxt(intrinsic_file).reshape(4, 4).astype(np.float32)
+    intrinsics[0] /= 640 / W
+    intrinsics[1] /= 480 / H
+    
+    return intrinsics

@@ -22,7 +22,7 @@ from detectron2.data import transforms as T
 from detectron2.data.catalog import DatasetCatalog, MetadataCatalog
 from odin.modeling.backproject.backproject import get_scannet_intrinsic, \
     backprojector_dataloader, get_ai2thor_intrinsics, \
-    get_s3dis_intrinsics, get_matterport_intrinsics
+    get_s3dis_intrinsics, get_matterport_intrinsics, get_scannetpp_intrinsics
 from PIL import Image
 from copy import deepcopy
 from torchvision import transforms as pt_transforms
@@ -176,6 +176,9 @@ class ScannetDatasetMapper:
         elif 'matterport' in dataset_name:
             self.multiplier = 1000
             self.get_intrinsics = get_matterport_intrinsics
+        elif 'scannetpp' in dataset_name:
+            self.multiplier = 1000
+            self.get_intrinsics = get_scannetpp_intrinsics
         else:
             self.multiplier = 1000
             self.get_intrinsics = get_scannet_intrinsic
@@ -183,6 +186,8 @@ class ScannetDatasetMapper:
         # path to SEMSEG_100k
         if 'scannet200' in dataset_name:
             self.label_db_filepath = self.cfg.SCANNET200_DATA_DIR
+        elif 'scannetpp' in dataset_name:
+            self.label_db_filepath = self.cfg.SCANNETPP_DATA_DIR
         elif 'scannet' in dataset_name:
             self.label_db_filepath = self.cfg.SCANNET_DATA_DIR
         elif 's3dis' in dataset_name:
@@ -204,6 +209,8 @@ class ScannetDatasetMapper:
                 elif 'matterport' in dataset_name:
                     scene_name, region_name = item['filepath'].split('/')[-1].split('.')[0].split('_')
                     scene_name = f"{scene_name}_region{region_name}"
+                elif 'scannetpp' in dataset_name:
+                    scene_name = item['raw_filepath'].split("/")[-3]
                 else:
                     scene_name = item['raw_filepath'].split('/')[-2]
                 self.scannet_data[scene_name] = item
@@ -439,13 +446,13 @@ class ScannetDatasetMapper:
         
         if decoder_3d:
             depth_file_names = dataset_dict.pop("depth_file_names", None)
-            if self.inpaint_depth:
+            if self.inpaint_depth and 'scannetpp' not in self.dataset_name:
                 depth_file_names = [
                     depth_file_names[i].replace("depth", self.cfg.DEPTH_PREFIX) for i in range(len(depth_file_names))
                 ]
             pose_file_names = dataset_dict.pop("pose_file_names", None)
             
-            if 's3dis' in self.dataset_name or 'matterport' in self.dataset_name:
+            if 's3dis' in self.dataset_name or 'matterport' in self.dataset_name or 'scannetpp' in self.dataset_name:
                 instrinsic_file_names = [
                     pose_file_names[i].replace("pose", "intrinsic") for i in range(len(pose_file_names))
                 ]

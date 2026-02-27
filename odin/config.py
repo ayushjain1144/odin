@@ -233,6 +233,8 @@ def add_maskformer2_video_config(cfg):
     cfg.PROB = None
     cfg.EXPORT_BENCHMARK_PATH = None
     cfg.DO_FEATURE_INTERPOLATION_LATER = False
+    cfg.JUST_DUMP_PREDS = False
+    cfg.SCANNETPP_DATA_DIR = None
     
     # Open Vocab configs
     cfg.MODEL.OPEN_VOCAB = False

@@ -7,7 +7,7 @@ import os
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.data.datasets.coco import load_coco_json, register_coco_instances
 from odin.global_vars import NAME_MAP20, AI2THOR_NAME_MAP, S3DIS_NAME_MAP, \
-    SCANNET200_NAME_MAP, ALFRED_NAME_MAP, MATTERPORT_NAME_MAP
+    SCANNET200_NAME_MAP, ALFRED_NAME_MAP, MATTERPORT_NAME_MAP, NAME_MAP_SCANNETPP
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,8 @@ def _get_dataset_instances_meta(dataset='ai2thor'):
         name_map = MATTERPORT_NAME_MAP
     elif dataset == 'scannet':
         name_map = NAME_MAP20
+    elif dataset == "scannetpp":
+        name_map = NAME_MAP_SCANNETPP
     else:
         assert False, 'dataset not supported: {}'.format(dataset)
     
