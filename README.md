@@ -1,5 +1,4 @@
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/odin-a-single-model-for-2d-and-3d-perception/3d-instance-segmentation-on-scannet200)](https://paperswithcode.com/sota/3d-instance-segmentation-on-scannet200?p=odin-a-single-model-for-2d-and-3d-perception)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/odin-a-single-model-for-2d-and-3d-perception/3d-semantic-segmentation-on-scannet200)](https://paperswithcode.com/sota/3d-semantic-segmentation-on-scannet200?p=odin-a-single-model-for-2d-and-3d-perception)
+[![Papers with Code: #3 on ScanNet200](https://paperswithcode.co/api/v1/papers/2401.02416/leaderboard-badge.svg?eval=9389&live=1)](https://paperswithcode.co/api/v1/papers/2401.02416/leaderboard-badge-link?eval=9389)
 
 # ODIN: A Single Model for 2D and 3D Segmentation
 
