@@ -27,7 +27,7 @@ sh init.sh
 
 ## Data Preparation
 
-Please refer to README in data_preparation folder for individual datasets. For eg. ScanNet data preparation [README](data_preparation/scannet/README.md)
+Please refer to README in data_preparation folder for individual datasets. Eg. ScanNet data preparation [README](data_preparation/scannet/README.md)
 
 ## Usage
 
